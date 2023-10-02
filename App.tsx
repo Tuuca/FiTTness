@@ -94,7 +94,6 @@ function App(): JSX.Element {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Text style={styles.sectionTitle}>Cadastro de Alimentos</Text>
-          <Navbar/>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
