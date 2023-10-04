@@ -93,47 +93,47 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Text style={styles.sectionTitle}>Cadastro de Alimentos</Text>
+          <Text style={styles.sectionTitle}>Cadastro de alimentos</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Nome do Alimento"
+              placeholder="Nome do alimento"
               value={alimentoNome}
               onChangeText={text => setProductNome(text)}
             />
             <TextInput
               style={styles.input}
-              placeholder="Preço do Alimento"
+              placeholder="Preço do alimento"
               value={alimentoPreco}
               onChangeText={text => setProductPreco(text)}
             />
             <TextInput
               style={styles.input}
-              placeholder="Calorias do Alimento"
+              placeholder="Calorias do alimento"
               value={alimentoCaloria}
               onChangeText={text => setProductCaloria(text)}
             />
             <TextInput
               style={styles.input}
-              placeholder="Proteinas do Alimento"
+              placeholder="Proteinas do alimento"
               value={alimentoProteina}
               onChangeText={text => setProductProteina(text)}
             />
             <TextInput
               style={styles.input}
-              placeholder="Carboidratos do Alimento"
+              placeholder="Carboidratos do alimento"
               value={alimentoCarboidrato}
               onChangeText={text => setProductCarboidrato(text)}
             />
             <TextInput
               style={styles.input}
-              placeholder="Gorduras do Alimento"
+              placeholder="Gorduras do alimento"
               value={alimentoGordura}
               onChangeText={text => setProductGordura(text)}
             />
             <TextInput
               style={styles.input}
-              placeholder="Fibras do Alimento"
+              placeholder="Fibras do alimento"
               value={alimentoFibra}
               onChangeText={text => setProductFibra(text)}
             />
@@ -141,7 +141,7 @@ function App(): JSX.Element {
             <TouchableOpacity
               style={styles.addButton}
               onPress={handleAddProduct}>
-              <Text style={styles.addButtonText}>Adicionar Alimento</Text>
+              <Text style={styles.addButtonText}>Cadastrar</Text>
             </TouchableOpacity>
           </View>
           <FlatList
