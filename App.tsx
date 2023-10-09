@@ -11,6 +11,7 @@ import {
   useColorScheme,
   View,
   FlatList,
+  Modal,
 } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -42,11 +43,18 @@ function App(): JSX.Element {
   const [alimentoCarboidrato, setProductCarboidrato] = useState('');
   const [alimentoGordura, setProductGordura] = useState('');
   const [alimentoFibra, setProductFibra] = useState('');
-
-
+  const [editingProductIndex, setEditingProductIndex] = useState<number | null>(
+    null,
+  );
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleAddProduct = () => {
-    if (alimentoNome && alimentoPreco && alimentoFibra && alimentoCaloria) {
+    if (
+      alimentoNome &&
+      alimentoPreco &&
+      alimentoFibra &&
+      alimentoCaloria
+    ) {
       const newProduct: Product = {
         nome: alimentoNome,
         preco: alimentoPreco,
@@ -55,7 +63,6 @@ function App(): JSX.Element {
         carboidrato: alimentoCarboidrato,
         gordura: alimentoGordura,
         fibra: alimentoFibra,
-
       };
       setProducts([...alimentos, newProduct]);
       setProductNome('');
@@ -68,15 +75,77 @@ function App(): JSX.Element {
     }
   };
 
-  const renderProductItem = ({ item }: { item: Product }) => (
+  const handleRemoveProduct = (index: number) => {
+    const newProducts = [...alimentos];
+    newProducts.splice(index, 1);
+    setProducts(newProducts);
+  };
+
+  const handleEditProduct = (index: number) => {
+    setEditingProductIndex(index);
+    setIsModalVisible(true);
+  };
+
+  const handleSaveProduct = () => {
+    if (
+      alimentoNome &&
+      alimentoPreco &&
+      alimentoFibra &&
+      alimentoCaloria &&
+      editingProductIndex !== null
+    ) {
+      const newProducts = [...alimentos];
+      newProducts[editingProductIndex] = {
+        nome: alimentoNome,
+        preco: alimentoPreco,
+        caloria: alimentoCaloria,
+        proteina: alimentoProteina,
+        carboidrato: alimentoCarboidrato,
+        gordura: alimentoGordura,
+        fibra: alimentoFibra,
+      };
+      setProducts(newProducts);
+      setProductNome('');
+      setProductPreco('');
+      setProductCaloria('');
+      setProductProteina('');
+      setProductCarboidrato('');
+      setProductGordura('');
+      setProductFibra('');
+      setEditingProductIndex(null);
+      setIsModalVisible(false);
+    }
+  };
+
+  const renderProductItem = ({
+    item,
+    index,
+  }: {
+    item: Product;
+    index: number;
+  }) => (
     <View style={styles.alimentoItem}>
       <Text style={styles.alimentoNome}>{item.nome}</Text>
       <Text style={styles.alimentoPreco}>Preço: {item.preco}</Text>
       <Text style={styles.alimentoCaloria}>Calorias: {item.caloria}</Text>
       <Text style={styles.alimentoFibra}>Proteinas: {item.proteina}</Text>
-      <Text style={styles.alimentoFibra}>Carboidratos: {item.carboidrato}</Text>
+      <Text style={styles.alimentoFibra}>
+        Carboidratos: {item.carboidrato}
+      </Text>
       <Text style={styles.alimentoFibra}>Gorduras: {item.gordura}</Text>
       <Text style={styles.alimentoFibra}>Fibras: {item.fibra}</Text>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => handleEditProduct(index)}>
+          <Text style={styles.editButtonText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.removeButton}
+          onPress={() => handleRemoveProduct(index)}>
+          <Text style={styles.removeButtonText}>Remover</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -99,43 +168,43 @@ function App(): JSX.Element {
               style={styles.input}
               placeholder="Nome do alimento"
               value={alimentoNome}
-              onChangeText={text => setProductNome(text)}
+              onChangeText={(text) => setProductNome(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Preço do alimento"
               value={alimentoPreco}
-              onChangeText={text => setProductPreco(text)}
+              onChangeText={(text) => setProductPreco(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Calorias do alimento"
               value={alimentoCaloria}
-              onChangeText={text => setProductCaloria(text)}
+              onChangeText={(text) => setProductCaloria(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Proteinas do alimento"
               value={alimentoProteina}
-              onChangeText={text => setProductProteina(text)}
+              onChangeText={(text) => setProductProteina(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Carboidratos do alimento"
               value={alimentoCarboidrato}
-              onChangeText={text => setProductCarboidrato(text)}
+              onChangeText={(text) => setProductCarboidrato(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Gorduras do alimento"
               value={alimentoGordura}
-              onChangeText={text => setProductGordura(text)}
+              onChangeText={(text) => setProductGordura(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Fibras do alimento"
               value={alimentoFibra}
-              onChangeText={text => setProductFibra(text)}
+              onChangeText={(text) => setProductFibra(text)}
             />
 
             <TouchableOpacity
@@ -149,6 +218,64 @@ function App(): JSX.Element {
             renderItem={renderProductItem}
             keyExtractor={(item, index) => `${item.nome}-${index}`}
           />
+          <Navbar />
+          <Modal visible={isModalVisible} animationType="slide">
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Editar alimento</Text>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Nome do alimento"
+                value={alimentoNome}
+                onChangeText={(text) => setProductNome(text)}
+              />
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Preço do alimento"
+                value={alimentoPreco}
+                onChangeText={(text) => setProductPreco(text)}
+              />
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Calorias do alimento"
+                value={alimentoCaloria}
+                onChangeText={(text) => setProductCaloria(text)}
+              />
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Proteinas do alimento"
+                value={alimentoProteina}
+                onChangeText={(text) => setProductProteina(text)}
+              />
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Carboidratos do alimento"
+                value={alimentoCarboidrato}
+                onChangeText={(text) => setProductCarboidrato(text)}
+              />
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Gorduras do alimento"
+                value={alimentoGordura}
+                onChangeText={(text) => setProductGordura(text)}
+              />
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Fibras do alimento"
+                value={alimentoFibra}
+                onChangeText={(text) => setProductFibra(text)}
+              />
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={handleSaveProduct}>
+                <Text style={styles.modalButtonText}>Salvar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setIsModalVisible(false)}>
+                <Text style={styles.modalButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -205,6 +332,58 @@ const styles = StyleSheet.create({
   alimentoCaloria: {
     fontSize: 16,
     marginBottom: 4,
+  },
+  removeButton: {
+    backgroundColor: 'red',
+    borderRadius: 4,
+    padding: 12,
+    alignItems: 'center',
+  },
+  removeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  editButton: {
+    backgroundColor: 'orange',
+    borderRadius: 4,
+    padding: 12,
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  editButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 12,
+  },
+  modalButton: {
+    backgroundColor: 'blue',
+    borderRadius: 4,
+    padding: 12,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

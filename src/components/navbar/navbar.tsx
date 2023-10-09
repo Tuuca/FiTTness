@@ -28,6 +28,10 @@ export default class Navbar extends React.Component<{}, State> {
                 <Text style={{ fontSize: 30, color: 'white' }}> </Text>
                 <StatusBar style="light" />
 
+                <View style={styles.content}>
+                    {/* Conteúdo principal da tela */}
+                </View>
+
                 <View style={styles.NavContainer}>
                     <View style={styles.NavBar}>
                         <Pressable
@@ -56,10 +60,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#3962FF',
     },
+    content: {
+        flex: 1,
+        width: '100%',
+        paddingBottom: 50, // Empurra o conteúdo principal para cima
+    },
     NavContainer: {
-        position: 'absolute',
+        position: 'absolute', // Fixa a navbar na parte inferior da tela
         alignItems: 'center',
-        bottom: 20,
+        bottom: 0, // Fixa a navbar na parte inferior da tela
+        width: '100%',
     },
     NavBar: {
         flexDirection: 'row',
