@@ -1,4 +1,4 @@
-package com.growth;
+package com.fittness;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
