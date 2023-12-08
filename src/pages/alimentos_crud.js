@@ -4,6 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { addDoc, collection, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from '../services/firebaseConfig';
 import BottomBar from '../components/bottombar';
+import auth from '@react-native-firebase/auth';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { RNCamera } from 'react-native-camera';
 
 const AlimentosCrud = () => {
     const navigation = useNavigation();
@@ -20,26 +23,52 @@ const AlimentosCrud = () => {
     const [modalProteinas, setModalProteinas] = useState('');
     const [modalCarboidratos, setModalCarboidratos] = useState('');
     const [modalGorduras, setModalGorduras] = useState('');
+    const [CodigoBarra, setCodigoBarra] = useState('');
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
+    const [link, setLink] = useState('');
+    const [isDataObtained, setIsDataObtained] = useState(false);
+    const [shouldNavigateBack, setShouldNavigateBack] = useState(false);
+    
+    
+    const userId = auth().currentUser.uid;
+
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, 'alimentos'), snapshot => {
-            const listAlimentos = snapshot.docs.map(doc => {
-                return {
-                    id: doc.id,
-                    ...doc.data()
-                };
+        const unsubscribe = onSnapshot(collection(db, 'alimentos')
+            , snapshot => {
+                const listAlimentos = snapshot.docs.map(doc => {
+                    return {
+                        id: doc.id,
+                        ...doc.data()
+                    };
+                })
+                    .filter(alimento => alimento.userId === userId);
+                setAlimentos(listAlimentos);
             });
-            setAlimentos(listAlimentos);
-        });
         return () => unsubscribe();
     }, []);
+    useEffect(() => {
+        if (isCameraOpen && isDataObtained && shouldNavigateBack) {
+            navigation.goBack();
+        }
+    }, [isCameraOpen, isDataObtained, shouldNavigateBack, navigation]);
+    const navigateToScanner = () => {
+        setIsDataObtained(false);
+        navigation.navigate('ScannerScreen', { onBarcodeScan, setIsDataObtained });
+    };
 
+    const onBarcodeScan = ({ data }) => {
+        setCodigoBarra(data);
+        setIsCameraOpen(false);
+    };
     function cadastrarAlimento() {
         const novoAlimento = {
+            userId: userId,
             nome,
             calorias: Number(calorias),
             proteinas: Number(proteinas),
             carboidratos: Number(carboidratos),
             gorduras: Number(gorduras),
+            CodigoBarra: CodigoBarra,
         };
 
         addDoc(collection(db, 'alimentos'), novoAlimento)
@@ -49,6 +78,7 @@ const AlimentosCrud = () => {
                 setProteinas('');
                 setCarboidratos('');
                 setGorduras('');
+                setCodigoBarra('');
             })
             .catch(error => {
                 console.error('Erro ao cadastrar alimento:', error);
@@ -65,7 +95,6 @@ const AlimentosCrud = () => {
             });
     }
 
-    // ...
     function handleUpdate() {
         const updatedAlimento = {
             nome: modalNome || selectedAlimento.nome,
@@ -75,17 +104,15 @@ const AlimentosCrud = () => {
             gorduras: modalGorduras !== '' ? Number(modalGorduras) : selectedAlimento.gorduras,
         };
 
-        // Atualize o documento no Firestore usando o ID do alimento selecionado
         updateDoc(doc(db, 'alimentos', selectedAlimento.id), updatedAlimento)
             .then(() => {
                 console.log('Alimento atualizado com sucesso!');
-                setModalVisible(false); // Fecha o modal após realizar o update
+                setModalVisible(false);
             })
             .catch(error => {
                 console.error('Erro ao atualizar alimento:', error);
             });
     }
-    // ...
 
     function confirmDelete(id) {
         Alert.alert(
@@ -145,13 +172,40 @@ const AlimentosCrud = () => {
                 onChangeText={text => setGorduras(text.replace(/[^0-9]/g, ''))}
                 keyboardType="numeric"
             />
+            <TextInput
+                style={styles.TextInput}
+                placeholder="Código de Barras"
+                placeholderTextColor="black"
+                value={CodigoBarra}
+                onChangeText={(text) => {
+                    setCodigoBarra(text.replace(/[^0-9]/g, ''));
+                    setShouldNavigateBack(true);
+                }}
+                keyboardType="numeric"
+            />
 
-            <Button title="Cadastrar Alimento" color="#2E2E2E" onPress={cadastrarAlimento} />
+            <Button style={styles.button} title="Scannear Produto" color="#2E2E2E" onPress={navigateToScanner} />
+
+
+            {isCameraOpen && !isDataObtained && (
+                <QRCodeScanner
+                    style={{ marginTop: 40 }}
+                    onRead={onBarcodeScan}
+                    flashMode={RNCamera.Constants.FlashMode.off}
+                    topContent={
+                        <Text style={styles.centerText}>
+                            Escaneie o QR Code
+                        </Text>
+                    }
+                />
+            )}
+
+            <Button title="Cadastrar Alimento" color="#2E2E2E" onPress={cadastrarAlimento} style={{ marginTop: 40 }} />
 
             <Text style={styles.title}>Lista de Alimentos</Text>
             <ScrollView style={styles.scrollView}>
                 {alimentos.map(item => (
-                    <View style={styles.alimentoItem}>
+                    <View style={styles.alimentoItem} key={item.id}>
                         <Text style={styles.alimentoNome}>{item.nome}</Text>
                         <Text style={styles.alimentoNome}>Calorias: {item.calorias}</Text>
                         <Text style={styles.alimentoNome}>Proteínas: {item.proteinas}</Text>
@@ -259,6 +313,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
         color: 'black',
+
     },
     TextInput: {
         width: '80%',
@@ -301,7 +356,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
-    // Estilos para o modal
     centeredView: {
         flex: 1,
         justifyContent: 'center',

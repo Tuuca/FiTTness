@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet, Modal, TextInput } from 'react-native';
 import BottomBar from '../components/bottombar';
 import auth from '@react-native-firebase/auth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
-
-const userId = auth().currentUser.uid;
+import styles from './styles';
 
 const Perfil = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalPeso, setModalPeso] = useState(false);
     const [editedNome, setEditedNome] = useState('');
     const [editedIdade, setEditedIdade] = useState('');
     const [editedAltura, setEditedAltura] = useState('');
@@ -24,6 +24,7 @@ const Perfil = ({ navigation }) => {
 
     useEffect(() => {
         const getUser = async () => {
+            const userId = auth().currentUser.uid;
             const docRef = doc(db, 'users', userId);
             const user = await getDoc(docRef);
 
@@ -36,22 +37,49 @@ const Perfil = ({ navigation }) => {
         };
 
         getUser();
-    }, []); // O segundo argumento vazio significa que o efeito será executado apenas uma vez, semelhante ao componentDidMount
+    }, []);
+
+    const AtualizacaoPeso = async () => {
+        console.log("CAPETA DEMONIO");
+        try {
+            const userId = auth().currentUser.uid;
+            const docRef = doc(db, 'users', userId);
+            const updatedData = {
+                peso: Number(editedPeso),
+            };
+
+            console.log('Novo Peso:', editedPeso);
+            await addDoc(collection(db, 'peso'), {
+                peso: Number(editedPeso),
+                userId: userId,
+                timestamp: new Date(),
+            });
+
+            await updateDoc(docRef, updatedData);
+            setModalPeso(false);
+            await getUser();
+            console.log('Perfil atualizado com sucesso!');
+            console.log('Entrada de peso adicionada com sucesso!');
+        } catch (error) {
+            console.error('Erro ao atualizar perfil:', error);
+        }
+    };
 
     const handleUpdateProfile = async () => {
-        const docRef = doc(db, 'users', userId);
-        const updatedData = {
-            nome: editedNome,
-            idade: Number(editedIdade),
-            altura: Number(editedAltura),
-            peso: Number(editedPeso),
-            sexo: editedSexo,
-        };
-
         try {
+            const userId = auth().currentUser.uid;
+            const docRef = doc(db, 'users', userId);
+            const updatedData = {
+                nome: editedNome,
+                idade: Number(editedIdade),
+                altura: Number(editedAltura),
+                peso: Number(editedPeso),
+                sexo: editedSexo,
+            };
+
             await updateDoc(docRef, updatedData);
             setModalVisible(false);
-            getUser();
+            await getUser();
             console.log('Perfil atualizado com sucesso!');
         } catch (error) {
             console.error('Erro ao atualizar perfil:', error);
@@ -106,6 +134,24 @@ const Perfil = ({ navigation }) => {
                 >
                     <Text style={{ color: 'white' }}>Editar</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.Button}
+                    onPress={() => setModalPeso(true)}
+                >
+                    <Text style={{ color: 'white' }}>Cadastro de Peso</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.Button}
+                    onPress={() => navigation.navigate('HistoricoPeso')}
+                >
+                    <Text style={{ color: 'white' }}>Histórico de peso</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.Button}
+                    onPress={() => navigation.navigate('HistoricoCalorias')}
+                >
+                    <Text style={{ color: 'white' }}>Histórico de calorias</Text>
+                </TouchableOpacity>
             </View>
 
             <Modal
@@ -141,14 +187,6 @@ const Perfil = ({ navigation }) => {
                     />
                     <TextInput
                         style={styles.modalInput}
-                        placeholder="Peso"
-                        placeholderTextColor="black"
-                        value={editedPeso}
-                        onChangeText={(text) => setEditedPeso(text.replace(/[^0-9]/g, ''))}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={styles.modalInput}
                         placeholder="Sexo"
                         placeholderTextColor="black"
                         value={editedSexo}
@@ -169,128 +207,40 @@ const Perfil = ({ navigation }) => {
                 </View>
             </Modal>
 
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalPeso}
+                onRequestClose={() => setModalPeso(false)}
+            >
+                <View style={styles.modalView}>
+                    <Text style={styles.modalTitle}>Cadastro de Peso</Text>
+                    <TextInput
+                        style={styles.modalInput}
+                        placeholder="Peso"
+                        placeholderTextColor="black"
+                        value={editedPeso}
+                        onChangeText={(text) => setEditedPeso(text.replace(/[^0-9]/g, ''))}
+                        keyboardType="numeric"
+                    />
+                    <TouchableOpacity
+                        style={styles.modalButton}
+                        onPress={AtualizacaoPeso}
+                    >
+                        <Text style={styles.buttonText}>Atualizar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.modalButton}
+                        onPress={() => setModalPeso(false)}
+                    >
+                        <Text style={styles.buttonText}>Cancelar</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+
             <BottomBar navigation={navigation} />
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-    infoContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'black',
-        width: 300,
-        height: 400,
-        padding: 10,
-    },
-    profileImage: {
-        width: '50%',
-        height: '50%',
-        borderRadius: 100,
-        marginBottom: 10,  // Adicionado marginBottom para ajustar a posição
-    },
-    userName: {
-        color: 'white',
-        marginBottom: 10,  // Adicionado marginBottom para ajustar a posição
-    },
-    gridRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        margin: 2,
-    },
-    gridItem: {
-        flex: 1,
-        backgroundColor: '#2E2E2E',
-        padding: 10,
-        marginHorizontal: 1,
-    },
-    infoLabel: {
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    infoText: {
-        color: 'white',
-    },
-
-
-    gridRowBaixo: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        margin: 2,
-    },
-    gridItemBaixo: {
-        flex: 1,
-        backgroundColor: '#2E2E2E',
-        padding: 10,
-        marginHorizontal: 1,
-    },
-
-
-    title: {
-        fontStyle: 'Century Gothic',
-        fontSize: 55,
-        textAlign: 'center',
-        margin: 10,
-        color: 'white',
-    },
-    Button: {
-        backgroundColor: '#62626E',
-        width: 100,
-        height: 40,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 10,
-    },
-
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-    modalTitle: {
-        fontSize: 20,
-        marginBottom: 15,
-        textAlign: 'center',
-        color: 'black',
-    },
-    modalInput: {
-        width: '80%',
-        height: 40,
-        color: 'black',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        padding: 10,
-        marginBottom: 10,
-    },
-    modalButton: {
-        backgroundColor: '#2196F3',
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        marginBottom: 10,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-    },
-});
 
 export default Perfil;

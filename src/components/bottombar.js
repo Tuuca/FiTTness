@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Button } from 'react-native';
 import { Icon } from 'react-native-elements'
+import auth from '@react-native-firebase/auth';
 
 const BottomBar = ({ activeTab, setActiveTab, navigation }) => {
   return (
@@ -54,6 +55,19 @@ const BottomBar = ({ activeTab, setActiveTab, navigation }) => {
         /> */}
         <Text style={styles.text}>Mercados</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.tabButton, activeTab === 4 && styles.activeTabButton]}
+        onPress={() => navigation.navigate('HomeInicial')}
+      >
+        {/* <Icon
+          name='map-marker'
+          type='material-icons'
+          color='#ff4d88'
+        /> */}
+        <Text style={styles.text}>Logout</Text>
+      </TouchableOpacity>
+
 
     </View>
   );

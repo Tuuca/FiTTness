@@ -1,27 +1,88 @@
-import React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
+import { color } from 'react-native-elements/dist/helpers';
 import BottomBar from '../components/bottombar';
-// import MapView from 'react-native-maps';
 
 const Mercados = ({ navigation }) => {
+    const [region, setRegion] = useState({
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    });
+    const [markets, setMarkets] = useState([]);
+
+    useEffect(() => {
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                setRegion(prevRegion => ({
+                    ...prevRegion,
+                    latitude,
+                    longitude,
+                }));
+
+                fetchNearbyMarkets(latitude, longitude);
+            },
+            error => {
+                console.error(error);
+            },
+        );
+    }, []);
+
+    const fetchNearbyMarkets = async (latitude, longitude) => {
+        try {
+            const response = await fetch(
+                `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=grocery_or_supermarket&key=AIzaSyAO2ci74MC31tPT_lCnlkt7jS4uJ-jF-bc`
+            );
+            const data = await response.json();
+
+            if (data && data.results) {
+                setMarkets(data.results);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar mercados:', error);
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>
-                Mercados
-                {/* <MapView
-                    initialRegion={{
-                        latitude: 37.78825,
-                        longitude: -122.4324,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
+
+            <Text style={styles.title}>Mercados</Text>
+            <MapView
+                style={styles.map}
+                region={region}
+            >
+                {/* Marcadores para os mercados próximos */}
+                {markets.map((market, index) => (
+                    <Marker
+                        key={index}
+                        color="black"
+                        coordinate={{
+                            latitude: market.geometry.location.lat,
+                            longitude: market.geometry.location.lng,
+                        }}
+                        title={market.name}
+                        description={market.vicinity
+                        }
+                    />
+                ))}
+                <Marker
+                    coordinate={{
+                        latitude: region.latitude,
+                        longitude: region.longitude,
                     }}
-                /> */}
-            </Text>
+                    title="Sua posição"
+                    description="Você está aqui"
+                />
+            </MapView>
             <BottomBar navigation={navigation} />
         </View>
-
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {
@@ -29,25 +90,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#5A94F2',
-
-    },
-    text: {
-        fontSize: 20,
-        fontStyle: 'Century Gothic',
-        textAlign: 'center',
-        margin: 10,
-    },
-    link: {
-        color: 'blue',
-        textDecorationLine: 'underline',
     },
     title: {
         fontStyle: 'Century Gothic',
         fontSize: 55,
         textAlign: 'center',
         margin: 10,
-    }
-
+    },
+    map: {
+        flex: 1,
+        width: '100%',
+    },
 });
 
 export default Mercados;

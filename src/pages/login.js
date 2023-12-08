@@ -10,7 +10,7 @@ const Login = ({ navigation, route }) => {
         try {
             const user = await auth().signInWithEmailAndPassword(username, password);
             console.log(user);
-            navigation.navigate('Home', { userId: user.user.uid });
+            navigation.navigate('Home', { isLogged: true });
         } catch (e) {
             console.log(e);
         }
@@ -23,12 +23,14 @@ const Login = ({ navigation, route }) => {
             <TextInput
                 style={styles.TextInput}
                 placeholder="Nome de usuário"
+                placeholderTextColor="black"
                 value={username}
                 onChangeText={setUsername}
             />
             <TextInput
                 style={styles.TextInput}
                 placeholder="Senha"
+                placeholderTextColor="black"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}

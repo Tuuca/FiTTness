@@ -29,7 +29,6 @@ const Cadastro = ({ navigation }) => {
                 };
 
                 const usersRef = await setDoc(doc(db, 'users', uid), data);
-                // console.log('Document written with ID: ', usersRef.id);
                 navigation.navigate('Login');
             })
             .catch((error) => {
