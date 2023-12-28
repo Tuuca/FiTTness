@@ -34,8 +34,6 @@ const HistoricoCalorias = ({ navigation }) => {
                 }
             });
 
-            console.log("DADOS CALORIA: ", dadosCaloria);
-
             setDadosPorDia(dadosCaloria);
         } catch (error) {
             console.error('Erro ao carregar histórico de Caloria:', error);
@@ -50,8 +48,6 @@ const HistoricoCalorias = ({ navigation }) => {
         }));
         return chartData;
     };
-
-    console.log("DADOS POR DIA: ", dadosPorDia);
 
     const renderChart = () => {
         const chartData = formatChartData();

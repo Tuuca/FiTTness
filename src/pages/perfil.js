@@ -40,7 +40,6 @@ const Perfil = ({ navigation }) => {
     }, []);
 
     const AtualizacaoPeso = async () => {
-        console.log("CAPETA DEMONIO");
         try {
             const userId = auth().currentUser.uid;
             const docRef = doc(db, 'users', userId);

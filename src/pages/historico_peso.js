@@ -40,7 +40,6 @@ const HistoricoPeso = ({ navigation }) => {
         }
     };
 
-    console.log("PESO: ", pesos);
 
     const renderChart = () => {
         if (pesos.length === 0) {

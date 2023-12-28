@@ -10,6 +10,15 @@ const HomeInicial = ({ navigation }) => {
                 FiTTness
             </Text>
 
+
+            <Text style={styles.text}>
+                Já possui conta?
+            </Text>
+
+            <Pressable title="Login" onPress={() => navigation.navigate('Login')} style={styles.button}>
+                <Text style={styles.text}>Login</Text>
+            </Pressable>
+
             <Text style={styles.text}>
                 Não possui conta?
             </Text>
@@ -17,15 +26,6 @@ const HomeInicial = ({ navigation }) => {
             <Pressable title="Cadastro" onPress={() => navigation.navigate('Cadastro')} style={styles.button}>
                 <Text style={styles.text}>Cadastro</Text>
             </Pressable>
-
-            <Text style={styles.text}>
-                Já possui conta?
-            </Text>
-            
-            <Pressable title="Login" onPress={() => navigation.navigate('Login')} style={styles.button}>
-                <Text style={styles.text}>Login</Text>
-            </Pressable>
-
         </View>
 
     );

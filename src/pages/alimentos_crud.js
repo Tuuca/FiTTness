@@ -175,7 +175,7 @@ const AlimentosCrud = () => {
             />
             <TextInput
                 style={styles.TextInput}
-                placeholder="Código de Barras"
+                placeholder="Código de barras"
                 placeholderTextColor="black"
                 value={CodigoBarra}
                 onChangeText={(text) => {
@@ -186,7 +186,7 @@ const AlimentosCrud = () => {
             />
 
             <Pressable style={styles.button} onPress={() => navigateToScanner()}>
-                <Text style={styles.text}>Scannear Produto</Text>
+                <Text style={styles.text}>Ler código de barras</Text>
             </Pressable>
 
             {isCameraOpen && !isDataObtained && (
@@ -203,10 +203,10 @@ const AlimentosCrud = () => {
             )}
 
             <Pressable style={styles.button} onPress={cadastrarAlimento}>
-                <Text style={styles.text}>Cadastrar Alimento</Text>
+                <Text style={styles.text}>Cadastrar alimento</Text>
             </Pressable>
 
-            <Text style={styles.title}>Lista de Alimentos</Text>
+            <Text style={styles.title}>Lista de alimentos</Text>
             <ScrollView style={styles.scrollView}>
                 {alimentos.map(item => (
                     <View style={styles.alimentoItem} key={item.id}>

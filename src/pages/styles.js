@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'black',
         width: 300,
         padding: 20,
     },
@@ -176,18 +175,18 @@ const styles = StyleSheet.create({
 
     gridItem: {
         flex: 1,
-        backgroundColor: '#2E2E2E',
+        backgroundColor: '#EEE',
         padding: 10,
         marginHorizontal: 1,
     },
 
     infoLabel: {
         fontWeight: 'bold',
-        color: 'white',
+        color: 'black',
     },
 
     infoText: {
-        color: 'white',
+        color: 'black',
     },
 
     gridRowBaixo: {

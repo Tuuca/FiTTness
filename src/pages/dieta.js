@@ -173,25 +173,21 @@ const Dieta = ({ navigation }) => {
         }
     };
 
-    console.log('modalVisible: ', modalVisible);
-    console.log('importModalVisible: ', importModalVisible);
-    console.log('exportModalVisible: ', exportModalVisible);
-
     return (
         <View style={styles.container}>
             <BottomBar navigation={navigation} />
             <Text style={styles.title}>Dieta</Text>
 
             <Pressable onPress={() => setModalVisible(true)} style={styles.button}>
-                <Text style={styles.text}>Cadastrar Refeicoes</Text>
+                <Text style={styles.text}>Cadastrar refeicoes</Text>
             </Pressable>
 
             <Pressable onPress={() => setImportModalVisible(true)} style={styles.button}>
-                <Text style={styles.text}>Importar Dieta</Text>
+                <Text style={styles.text}>Importar dieta</Text>
             </Pressable>
 
             <Pressable onPress={() => setExportModalVisible(true)} style={styles.button}>
-                <Text style={styles.text}>Exportar Dieta</Text>
+                <Text style={styles.text}>Exportar dieta</Text>
             </Pressable>
 
             <Modal visible={modalVisible} animationType="slide">
