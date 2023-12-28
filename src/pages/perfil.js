@@ -93,7 +93,7 @@ const Perfil = ({ navigation }) => {
                     style={styles.profileImage}
                     source={require('../image/profile.png')}
                 />
-                <Text style={styles.userName}>{editedNome ? `${editedNome}` : userData.nome}</Text>
+                <Text style={styles.text}>{editedNome ? `${editedNome}` : userData.nome}</Text>
 
                 <View style={styles.gridRow}>
                     <View style={styles.gridItem}>
@@ -129,25 +129,25 @@ const Perfil = ({ navigation }) => {
                 </View>
 
                 <TouchableOpacity
-                    style={styles.Button}
+                    style={styles.button}
                     onPress={() => setModalVisible(true)}
                 >
-                    <Text style={{ color: 'white' }}>Editar</Text>
+                    <Text style={{ color: 'white' }}>Editar informações</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.Button}
+                    style={styles.button}
                     onPress={() => setModalPeso(true)}
                 >
-                    <Text style={{ color: 'white' }}>Cadastro de Peso</Text>
+                    <Text style={{ color: 'white' }}>Atualizar peso</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.Button}
+                    style={styles.button}
                     onPress={() => navigation.navigate('HistoricoPeso')}
                 >
                     <Text style={{ color: 'white' }}>Histórico de peso</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.Button}
+                    style={styles.button}
                     onPress={() => navigation.navigate('HistoricoCalorias')}
                 >
                     <Text style={{ color: 'white' }}>Histórico de calorias</Text>
@@ -156,21 +156,20 @@ const Perfil = ({ navigation }) => {
 
             <Modal
                 animationType="slide"
-                transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
             >
-                <View style={styles.modalView}>
-                    <Text style={styles.modalTitle}>Editar Perfil</Text>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Editar Perfil</Text>
                     <TextInput
-                        style={styles.modalInput}
+                        style={styles.TextInput}
                         placeholder="Nome"
                         placeholderTextColor="black"
                         value={editedNome}
                         onChangeText={(text) => setEditedNome(text)}
                     />
                     <TextInput
-                        style={styles.modalInput}
+                        style={styles.TextInput}
                         placeholder="Idade"
                         placeholderTextColor="black"
                         value={editedIdade}
@@ -178,7 +177,7 @@ const Perfil = ({ navigation }) => {
                         keyboardType="numeric"
                     />
                     <TextInput
-                        style={styles.modalInput}
+                        style={styles.TextInput}
                         placeholder="Altura"
                         placeholderTextColor="black"
                         value={editedAltura}
@@ -186,20 +185,20 @@ const Perfil = ({ navigation }) => {
                         keyboardType="numeric"
                     />
                     <TextInput
-                        style={styles.modalInput}
+                        style={styles.TextInput}
                         placeholder="Sexo"
                         placeholderTextColor="black"
                         value={editedSexo}
                         onChangeText={(text) => setEditedSexo(text)}
                     />
                     <TouchableOpacity
-                        style={styles.modalButton}
+                        style={styles.button}
                         onPress={handleUpdateProfile}
                     >
                         <Text style={styles.buttonText}>Atualizar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.modalButton}
+                        style={styles.button}
                         onPress={() => setModalVisible(false)}
                     >
                         <Text style={styles.buttonText}>Cancelar</Text>
@@ -209,14 +208,13 @@ const Perfil = ({ navigation }) => {
 
             <Modal
                 animationType="slide"
-                transparent={true}
                 visible={modalPeso}
                 onRequestClose={() => setModalPeso(false)}
             >
-                <View style={styles.modalView}>
-                    <Text style={styles.modalTitle}>Cadastro de Peso</Text>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Cadastro de Peso</Text>
                     <TextInput
-                        style={styles.modalInput}
+                        style={styles.TextInput}
                         placeholder="Peso"
                         placeholderTextColor="black"
                         value={editedPeso}
@@ -224,16 +222,16 @@ const Perfil = ({ navigation }) => {
                         keyboardType="numeric"
                     />
                     <TouchableOpacity
-                        style={styles.modalButton}
+                        style={styles.button}
                         onPress={AtualizacaoPeso}
                     >
-                        <Text style={styles.buttonText}>Atualizar</Text>
+                        <Text style={styles.text}>Atualizar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.modalButton}
+                        style={styles.button}
                         onPress={() => setModalPeso(false)}
                     >
-                        <Text style={styles.buttonText}>Cancelar</Text>
+                        <Text style={styles.text}>Cancelar</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>

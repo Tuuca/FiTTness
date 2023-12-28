@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Image, Pressable } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import styles from './styles';
 
 const Login = ({ navigation, route }) => {
     const [username, setUsername] = useState('');
@@ -17,6 +18,7 @@ const Login = ({ navigation, route }) => {
     }
 
     return (
+
         <View style={styles.container}>
             <Text style={styles.title}>Login</Text>
 
@@ -36,39 +38,20 @@ const Login = ({ navigation, route }) => {
                 onChangeText={setPassword}
             />
 
-            <Button title="Entrar" color="#2E2E2E" onPress={login} />
+            <Pressable title="Entrar" onPress={login} style={styles.button}>
+                <Text style={styles.text}>Entrar</Text>
+            </Pressable>
 
-            <Text style={styles.title}>Não possui uma conta?</Text>
-            <Button title="Cadastrar" color="#2E2E2E" onPress={() => navigation.navigate('Cadastro')} />
+            <Text style={styles.text}>Não possui uma conta?</Text>
+
+            {/* <Button title="Cadastrar" onPress={() => navigation.navigate('Cadastro')} style={styles.button} />*/}
+
+            <Pressable title="Cadastrar" onPress={() => navigation.navigate('Cadastro')} style={styles.button}>
+                <Text style={styles.text}>Cadastrar</Text>
+            </Pressable>
+
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-    title: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        color: 'white',
-    },
-    TextInput: {
-        width: '80%',
-        height: 40,
-        color: 'black',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 10,
-        marginBottom: 10,
-
-    },
-})
-
-
-export default Login
+export default Login;

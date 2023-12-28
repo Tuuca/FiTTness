@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { color } from 'react-native-elements/dist/helpers';
 import BottomBar from '../components/bottombar';
+import styles from './styles';
 
 const Mercados = ({ navigation }) => {
     const [region, setRegion] = useState({
@@ -50,7 +51,7 @@ const Mercados = ({ navigation }) => {
     return (
         <View style={styles.container}>
 
-            <Text style={styles.title}>Mercados</Text>
+            <Text style={styles.title}>Mercados próximos a você</Text>
             <MapView
                 style={styles.map}
                 region={region}
@@ -82,25 +83,5 @@ const Mercados = ({ navigation }) => {
         </View>
     );
 };
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-    title: {
-        fontStyle: 'Century Gothic',
-        fontSize: 55,
-        textAlign: 'center',
-        margin: 10,
-    },
-    map: {
-        flex: 1,
-        width: '100%',
-    },
-});
 
 export default Mercados;

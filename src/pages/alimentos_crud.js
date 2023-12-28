@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
+import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet, Alert, Modal, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { addDoc, collection, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from '../services/firebaseConfig';
@@ -7,6 +7,7 @@ import BottomBar from '../components/bottombar';
 import auth from '@react-native-firebase/auth';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
+import styles from './styles';
 
 const AlimentosCrud = () => {
     const navigation = useNavigation();
@@ -28,8 +29,8 @@ const AlimentosCrud = () => {
     const [link, setLink] = useState('');
     const [isDataObtained, setIsDataObtained] = useState(false);
     const [shouldNavigateBack, setShouldNavigateBack] = useState(false);
-    
-    
+
+
     const userId = auth().currentUser.uid;
 
     useEffect(() => {
@@ -184,8 +185,9 @@ const AlimentosCrud = () => {
                 keyboardType="numeric"
             />
 
-            <Button style={styles.button} title="Scannear Produto" color="#2E2E2E" onPress={navigateToScanner} />
-
+            <Pressable style={styles.button} onPress={() => navigateToScanner()}>
+                <Text style={styles.text}>Scannear Produto</Text>
+            </Pressable>
 
             {isCameraOpen && !isDataObtained && (
                 <QRCodeScanner
@@ -200,13 +202,15 @@ const AlimentosCrud = () => {
                 />
             )}
 
-            <Button title="Cadastrar Alimento" color="#2E2E2E" onPress={cadastrarAlimento} style={{ marginTop: 40 }} />
+            <Pressable style={styles.button} onPress={cadastrarAlimento}>
+                <Text style={styles.text}>Cadastrar Alimento</Text>
+            </Pressable>
 
             <Text style={styles.title}>Lista de Alimentos</Text>
             <ScrollView style={styles.scrollView}>
                 {alimentos.map(item => (
                     <View style={styles.alimentoItem} key={item.id}>
-                        <Text style={styles.alimentoNome}>{item.nome}</Text>
+                        <Text style={styles.alimentoNome}>Nome: {item.nome}</Text>
                         <Text style={styles.alimentoNome}>Calorias: {item.calorias}</Text>
                         <Text style={styles.alimentoNome}>Proteínas: {item.proteinas}</Text>
                         <Text style={styles.alimentoNome}>Carboidratos: {item.carboidratos}</Text>
@@ -230,177 +234,167 @@ const AlimentosCrud = () => {
             </ScrollView>
 
             {/* Modal para realizar o update */}
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalTitle}>Editar Alimento</Text>
-                        <TextInput
-                            style={styles.modalInput}
-                            placeholder="Novo Nome"
-                            placeholderTextColor="black"
-                            value={modalNome}
-                            onChangeText={setModalNome}
-                        />
-                        <TextInput
-                            style={styles.modalInput}
-                            placeholder="Nova Caloria"
-                            placeholderTextColor="black"
-                            value={modalCalorias}
-                            onChangeText={text => setModalCalorias(text.replace(/[^0-9]/g, ''))}
-                            keyboardType="numeric"
-                        />
-                        <TextInput
-                            style={styles.modalInput}
-                            placeholder="Nova Proteína"
-                            placeholderTextColor="black"
-                            value={modalProteinas}
-                            onChangeText={text => setModalProteinas(text.replace(/[^0-9]/g, ''))}
-                            keyboardType="numeric"
-                        />
-                        <TextInput
-                            style={styles.modalInput}
-                            placeholder="Novo Carboidrato"
-                            placeholderTextColor="black"
-                            value={modalCarboidratos}
-                            onChangeText={text => setModalCarboidratos(text.replace(/[^0-9]/g, ''))}
-                            keyboardType="numeric"
-                        />
-                        <TextInput
-                            style={styles.modalInput}
-                            placeholder="Nova Gordura"
-                            placeholderTextColor="black"
-                            value={modalGorduras}
-                            onChangeText={text => setModalGorduras(text.replace(/[^0-9]/g, ''))}
-                            keyboardType="numeric"
-                        />
-                        <TouchableOpacity
-                            style={styles.modalButton}
-                            onPress={() => { handleUpdate(); setModalVisible(!modalVisible); }}
-                        >
-                            <Text style={styles.buttonText}>Atualizar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.modalButton}
-                            onPress={() => setModalVisible(!modalVisible)}
-                        >
-                            <Text style={styles.buttonText}>Cancelar</Text>
-                        </TouchableOpacity>
-                    </View>
+            <Modal animationType="slide" visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible); }} >
+                <View style={styles.container}>
+                    <Text style={styles.title}>Editar Alimento</Text>
+                    <TextInput
+                        style={styles.TextInput}
+                        placeholder="Novo Nome"
+                        placeholderTextColor="black"
+                        value={modalNome}
+                        onChangeText={setModalNome}
+                    />
+                    <TextInput
+                        style={styles.TextInput}
+                        placeholder="Nova Caloria"
+                        placeholderTextColor="black"
+                        value={modalCalorias}
+                        onChangeText={text => setModalCalorias(text.replace(/[^0-9]/g, ''))}
+                        keyboardType="numeric"
+                    />
+                    <TextInput
+                        style={styles.TextInput}
+                        placeholder="Nova Proteína"
+                        placeholderTextColor="black"
+                        value={modalProteinas}
+                        onChangeText={text => setModalProteinas(text.replace(/[^0-9]/g, ''))}
+                        keyboardType="numeric"
+                    />
+                    <TextInput
+                        style={styles.TextInput}
+                        placeholder="Novo Carboidrato"
+                        placeholderTextColor="black"
+                        value={modalCarboidratos}
+                        onChangeText={text => setModalCarboidratos(text.replace(/[^0-9]/g, ''))}
+                        keyboardType="numeric"
+                    />
+                    <TextInput
+                        style={styles.TextInput}
+                        placeholder="Nova Gordura"
+                        placeholderTextColor="black"
+                        value={modalGorduras}
+                        onChangeText={text => setModalGorduras(text.replace(/[^0-9]/g, ''))}
+                        keyboardType="numeric"
+                    />
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => { handleUpdate(); setModalVisible(!modalVisible); }}
+                    >
+                        <Text style={styles.text}>Atualizar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => setModalVisible(!modalVisible)}
+                    >
+                        <Text style={styles.text}>Cancelar</Text>
+                    </TouchableOpacity>
                 </View>
             </Modal>
-
             <BottomBar navigation={navigation} />
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-    title: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        color: 'black',
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         backgroundColor: '#5A94F2',
+//     },
+//     title: {
+//         fontSize: 20,
+//         textAlign: 'center',
+//         margin: 10,
+//         color: 'black',
 
-    },
-    TextInput: {
-        width: '80%',
-        height: 40,
-        color: 'black',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 10,
-        marginBottom: 10,
-    },
-    alimentoItem: {
-        backgroundColor: '#ddd',
-        margin: 10,
-        padding: 20,
-        borderRadius: 10,
+//     },
+//     TextInput: {
+//         width: '80%',
+//         height: 40,
+//         color: 'black',
+//         backgroundColor: 'white',
+//         borderRadius: 20,
+//         padding: 10,
+//         marginBottom: 10,
+//     },
+//     alimentoItem: {
+//         backgroundColor: '#ddd',
+//         margin: 10,
+//         padding: 20,
+//         borderRadius: 10,
 
-    },
-    alimentoNome: {
-        fontSize: 17,
-        color: 'black',
-    },
-    scrollView: {
-        width: '100%',
-    },
-    buttonDelete: {
-        backgroundColor: 'red',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 10,
-        alignItems: 'center',
-    },
-    buttonUpdate: {
-        backgroundColor: 'orange',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 10,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
-    },
-    modalView: {
-        margin: 5,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 5,
-        width: 300,
-        height: 400,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-    modalTitle: {
-        fontSize: 20,
-        marginBottom: 15,
-        textAlign: 'center',
-        color: 'black',
-    },
-    modalInput: {
-        width: '80%',
-        height: 40,
-        color: 'black',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        padding: 10,
-        marginBottom: 10,
-    },
-    modalButton: {
-        backgroundColor: '#2196F3',
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        marginBottom: 10,
-    },
-});
+//     },
+//     alimentoNome: {
+//         fontSize: 17,
+//         color: 'black',
+//     },
+//     scrollView: {
+//         width: '100%',
+//     },
+//     buttonDelete: {
+//         backgroundColor: 'red',
+//         padding: 10,
+//         borderRadius: 5,
+//         marginTop: 10,
+//         alignItems: 'center',
+//     },
+//     buttonUpdate: {
+//         backgroundColor: 'orange',
+//         padding: 10,
+//         borderRadius: 5,
+//         marginTop: 10,
+//         alignItems: 'center',
+//     },
+//     buttonText: {
+//         color: 'white',
+//         fontSize: 16,
+//     },
+//     centeredView: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         marginTop: 22,
+//     },
+//     modalView: {
+//         margin: 5,
+//         backgroundColor: 'white',
+//         borderRadius: 20,
+//         padding: 5,
+//         width: 300,
+//         height: 400,
+//         alignItems: 'center',
+//         shadowColor: '#000',
+//         shadowOffset: {
+//             width: 0,
+//             height: 2,
+//         },
+//         shadowOpacity: 0.25,
+//         shadowRadius: 4,
+//         elevation: 5,
+//     },
+//     modalTitle: {
+//         fontSize: 20,
+//         marginBottom: 15,
+//         textAlign: 'center',
+//         color: 'black',
+//     },
+//     TextInput: {
+//         width: '80%',
+//         height: 40,
+//         color: 'black',
+//         backgroundColor: '#F2F2F2',
+//         borderRadius: 10,
+//         padding: 10,
+//         marginBottom: 10,
+//     },
+//     modalButton: {
+//         backgroundColor: '#2196F3',
+//         borderRadius: 10,
+//         padding: 10,
+//         elevation: 2,
+//         marginBottom: 10,
+//     },
+// });
 
 export default AlimentosCrud;

@@ -4,6 +4,7 @@ import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
 import BottomBar from '../components/bottombar';
+import styles from './styles';
 
 const { width } = Dimensions.get('window');
 
@@ -60,13 +61,13 @@ const HistoricoCalorias = ({ navigation }) => {
         }
 
         return (
-            <View style={{ height: 400, flexDirection: 'row', width: width - 20 }}>
+            <View style={{ height: 400, flexDirection: 'row', width: width - 20, backgroundColor: '#666', padding: 10 }}>
                 <YAxis
                     data={chartData.map((data) => data.calorias)}
                     contentInset={{ top: 20, bottom: 30 }}
-                    svg={{ fill: 'black', fontSize: 10 }}
+                    svg={{ fill: 'white', fontSize: 10 }}
                     numberOfTicks={10}
-                    formatLabel={(value) => `${value}`}
+                    formatLabel={(value) => `${value}kcal`}
                 />
                 <View style={{ flex: 1, marginLeft: 10 }}>
                     <LineChart
@@ -74,7 +75,7 @@ const HistoricoCalorias = ({ navigation }) => {
                         data={chartData}
                         xAccessor={({ index }) => index}
                         yAccessor={({ item }) => item.calorias}
-                        svg={{ stroke: 'rgb(134, 65, 244)' }}
+                        svg={{ stroke: '#ff4d88' }}
                         contentInset={{ top: 20, bottom: 20 }}
                     >
                         <Grid />
@@ -83,7 +84,7 @@ const HistoricoCalorias = ({ navigation }) => {
                         style={{ marginHorizontal: -10 }}
                         data={chartData}
                         formatLabel={(value, index) => chartData[index].date}
-                        svg={{ fontSize: 10, fill: 'black' }}
+                        svg={{ fontSize: 10, fill: 'white' }}
                         contentInset={{ left: 35, right: 35, bottom: 35 }}
                     />
                 </View>
@@ -98,15 +99,5 @@ const HistoricoCalorias = ({ navigation }) => {
         </View>
     );
 };
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-});
 
 export default HistoricoCalorias;

@@ -3,21 +3,18 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Button } from 'react-native';
 import { Icon } from 'react-native-elements'
 import auth from '@react-native-firebase/auth';
+import styles from '../pages/styles';
 
 const BottomBar = ({ activeTab, setActiveTab, navigation }) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.bottombar}>
 
       <TouchableOpacity
         style={[styles.tabButton, activeTab === 0 && styles.activeTabButton]}
         onPress={() => navigation.navigate('Dieta')}
       >
-        {/* <Icon
-          name='bowl-mix'
-          type='material-icons'
-          color='#ff4d88'
-        /> */}
-        <Text style={styles.text}>Dieta</Text>
+
+        <Text style={styles.textbottombar} >Dieta</Text>
 
       </TouchableOpacity>
       <TouchableOpacity
@@ -29,7 +26,7 @@ const BottomBar = ({ activeTab, setActiveTab, navigation }) => {
           type='material-icons'
           color='#ff4d88'
         /> */}
-        <Text style={styles.text}>Alimentos</Text>
+        <Text style={styles.textbottombar}>Alimentos</Text>
 
       </TouchableOpacity>
       <TouchableOpacity
@@ -41,7 +38,7 @@ const BottomBar = ({ activeTab, setActiveTab, navigation }) => {
           type='material-icons'
           color='#ff4d88'
         /> */}
-        <Text style={styles.text}>Perfil</Text>
+        <Text style={styles.textbottombar}>Perfil</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -53,7 +50,7 @@ const BottomBar = ({ activeTab, setActiveTab, navigation }) => {
           type='material-icons'
           color='#ff4d88'
         /> */}
-        <Text style={styles.text}>Mercados</Text>
+        <Text style={styles.textbottombar}>Mercados</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -65,39 +62,12 @@ const BottomBar = ({ activeTab, setActiveTab, navigation }) => {
           type='material-icons'
           color='#ff4d88'
         /> */}
-        <Text style={styles.text}>Logout</Text>
+        <Text style={styles.textbottombar}>Logout</Text>
       </TouchableOpacity>
 
 
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    height: 60,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  tabButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activeTabButton: {
-    backgroundColor: '#ddd',
-  },
-  text: {
-    color: '#ff4d88',
-  }
-});
 
 export default BottomBar;

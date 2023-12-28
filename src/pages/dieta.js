@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput, Button, Clipboard } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput, Button, Clipboard, Pressable, ScrollView } from 'react-native';
 import BottomBar from '../components/bottombar';
 import { Picker } from '@react-native-picker/picker';
-import {writeBatch, batch, deleteDoc ,getDocs, collection, onSnapshot, addDoc, doc, getDoc } from 'firebase/firestore';
+import { writeBatch, batch, deleteDoc, getDocs, collection, onSnapshot, addDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
 import auth from '@react-native-firebase/auth';
+import styles from './styles';
 
 const Dieta = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -60,7 +61,7 @@ const Dieta = ({ navigation }) => {
                     gordura: alimento.gorduras,
                     carboidrato: alimento.carboidratos,
                     proteina: alimento.proteinas,
-                    hora: new Date().toISOString(),
+                    hora: new Date(),
                 };
 
                 await addDoc(collection(db, 'refeicoes_feita'), refeicaoFeita);
@@ -122,20 +123,20 @@ const Dieta = ({ navigation }) => {
     const handleImportarDieta = async () => {
         try {
             const batchOperation = writeBatch(db);
-    
+
             dietas.forEach((dieta) => {
                 const dietaRef = doc(db, 'refeicoes', dieta.id);
                 batchOperation.delete(dietaRef);
             });
-    
+
             await batchOperation.commit();
-    
+
             const refeicoesSnapshot = await getDocs(collection(db, 'refeicoes'));
-    
+
             const refeicoesUsuario = refeicoesSnapshot.docs
                 .filter((refeicaoDoc) => refeicaoDoc.data().userId === ImportUserId)
                 .map((refeicaoDoc) => refeicaoDoc.data());
-    
+
             for (const refeicaoData of refeicoesUsuario) {
                 const novaDieta = {
                     userId: auth().currentUser.uid,
@@ -143,22 +144,22 @@ const Dieta = ({ navigation }) => {
                     horario: refeicaoData.horario,
                     alimentos: refeicaoData.alimentos,
                 };
-    
+
                 await addDoc(collection(db, 'refeicoes'), novaDieta);
             }
-    
+
             console.log('Refeições importadas com sucesso para o usuário logado.');
-    
+
             carregarDietas();
-    
+
             setImportModalVisible(false);
         } catch (error) {
             console.error('Erro ao importar dieta:', error);
         }
     };
-    
-    
-    
+
+
+
 
     const handleExportarDieta = () => {
         try {
@@ -172,29 +173,30 @@ const Dieta = ({ navigation }) => {
         }
     };
 
+    console.log('modalVisible: ', modalVisible);
+    console.log('importModalVisible: ', importModalVisible);
+    console.log('exportModalVisible: ', exportModalVisible);
+
     return (
         <View style={styles.container}>
             <BottomBar navigation={navigation} />
             <Text style={styles.title}>Dieta</Text>
 
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity>
-                    <Button title='Cadastrar Refeicoes' color="#2E2E2E" onPress={() => setModalVisible(true)} />
-                </TouchableOpacity>
+            <Pressable onPress={() => setModalVisible(true)} style={styles.button}>
+                <Text style={styles.text}>Cadastrar Refeicoes</Text>
+            </Pressable>
 
-               <TouchableOpacity>
-                    <Button title='Importar Dieta' color="#2E2E2E" onPress={() => setImportModalVisible(true)}/>
-                </TouchableOpacity>
+            <Pressable onPress={() => setImportModalVisible(true)} style={styles.button}>
+                <Text style={styles.text}>Importar Dieta</Text>
+            </Pressable>
 
-                <TouchableOpacity >
-                    <Button title='Exportar Dieta' color="#2E2E2E" onPress={() => setExportModalVisible(true)} />
-                </TouchableOpacity>
-            </View>
+            <Pressable onPress={() => setExportModalVisible(true)} style={styles.button}>
+                <Text style={styles.text}>Exportar Dieta</Text>
+            </Pressable>
 
             <Modal visible={modalVisible} animationType="slide">
-                <View style={styles.modalContainer}>
-                    <BottomBar navigation={navigation} />
-                    <Text style={styles.modalTitle}>Cadastrar Refeicoes</Text>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Cadastrar Refeicoes</Text>
 
                     <TextInput
                         style={styles.TextInput}
@@ -208,6 +210,7 @@ const Dieta = ({ navigation }) => {
                         placeholderTextColor="black"
                         onChangeText={(text) => setHorarioDieta(text)}
                     />
+
                     <Picker
                         selectedValue={selectedAlimento}
                         style={styles.picker}
@@ -219,16 +222,20 @@ const Dieta = ({ navigation }) => {
                         ))}
                     </Picker>
 
-                    <TouchableOpacity style={styles.modalButton} onPress={handleCadastrarDieta}>
-                        <Text style={styles.buttonText}>Cadastrar Refeicoes</Text>
+                    <TouchableOpacity style={styles.button} onPress={handleCadastrarDieta}>
+                        <Text style={styles.text}>Cadastrar Refeicoes</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+                        <Text style={styles.text}>Cancelar</Text>
                     </TouchableOpacity>
 
                 </View>
             </Modal>
 
             <Modal visible={importModalVisible} animationType="slide">
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Importar Dieta</Text>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Importar Dieta</Text>
 
                     <TextInput
                         style={styles.TextInput}
@@ -237,33 +244,36 @@ const Dieta = ({ navigation }) => {
                         onChangeText={(text) => setImportUserId(text)}
                     />
 
-                    <TouchableOpacity style={styles.modalButton} onPress={handleImportarDieta}>
-                        <Text style={styles.buttonText}>Importar</Text>
+                    <TouchableOpacity style={styles.button} onPress={handleImportarDieta}>
+                        <Text style={styles.text}>Importar</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.modalButton} onPress={() => setImportModalVisible(false)}>
-                        <Text style={styles.buttonText}>Cancelar</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => setImportModalVisible(false)}>
+                        <Text style={styles.text}>Cancelar</Text>
                     </TouchableOpacity>
+
                 </View>
             </Modal>
 
             <Modal visible={exportModalVisible} animationType="slide">
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Exportar Dieta</Text>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Exportar Dieta</Text>
 
-                    <Text>ID da dieta a ser compartilhada: {exportedUserId}</Text>
+                    <Text style={styles.text}>ID da dieta a ser compartilhada: </Text>
 
-                    <TouchableOpacity style={styles.modalButton} onPress={handleExportarDieta}>
+                    <Text style={styles.text}>{exportedUserId}</Text>
+
+                    <TouchableOpacity style={styles.button} onPress={handleExportarDieta}>
                         <Text style={styles.buttonText}>Copiar código</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.modalButton} onPress={() => setExportModalVisible(false)}>
+                    <TouchableOpacity style={styles.button} onPress={() => setExportModalVisible(false)}>
                         <Text style={styles.buttonText}>Cancelar</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
 
-            <View style={styles.listaDietasContainer}>
+            <ScrollView style={styles.scrollView}>
                 {dietas.map((d) => (
                     <View key={d.id} style={styles.dietaContainer}>
                         <TouchableOpacity onPress={() => handleDetalhesVisiveisToggle(d.id)}>
@@ -284,114 +294,16 @@ const Dieta = ({ navigation }) => {
                         )}
 
                         {detalhesVisiveisArray.find((item) => item.dietaId === d.id && item.visivel) && (
-                            <TouchableOpacity style={styles.modalButton} onPress={() => registrarRefeicaoFeita(d.id)}>
+                            <TouchableOpacity style={styles.button} onPress={() => registrarRefeicaoFeita(d.id)}>
                                 <Text style={styles.buttonText}>Registrar Refeição Feita</Text>
                             </TouchableOpacity>
                         )}
                     </View>
                 ))}
-            </View>
+            </ScrollView>
+            <BottomBar navigation={navigation} />
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-        padding: 20,
-    },
-    title: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        color: 'black',
-    },
-    TextInput: {
-        width: '80%',
-        height: 40,
-        color: 'black',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 10,
-        marginBottom: 10,
-    },
-    modalTitle: {
-        fontSize: 20,
-        marginBottom: 15,
-        textAlign: 'center',
-        color: 'black',
-    },
-    modalButton: {
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        marginBottom: 10,
-        backgroundColor: '#2196F3',
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-    },
-    picker: {
-        width: '80%',
-        height: 40,
-        color: 'black',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        paddingLeft: 10,
-    },
-    listaDietasContainer: {
-        marginTop: 20,
-        padding: 10,
-        borderRadius: 10,
-        width: '90%',
-        borderColor: 'red 2px solid',
-    },
-    listaDietasItem: {
-        fontSize: 16,
-        marginBottom: 5,
-        color: 'black',
-        borderRadius: 10,
-    },
-    detalhesAlimentoContainer: {
-        margin: 10,
-        padding: 10,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        borderRadius: 10,
-    },
-    detalhesAlimentoItem: {
-        fontSize: 16,
-        marginBottom: 5,
-        color: 'black',
-    },
-    dietaContainer: {
-        marginBottom: 20,
-        padding: 10,
-        borderColor: 'black 2px solid',
-        borderRadius: 10,
-        width: '90%',
-        backgroundColor: '#43BCF0'
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: 390,
-        height: 40,
-    
-        
-    },
-});
 
 export default Dieta;

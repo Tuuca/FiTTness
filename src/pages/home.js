@@ -4,6 +4,7 @@ import BottomBar from '../components/bottombar';
 import auth from '@react-native-firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
+import styles from './styles';
 
 const Home = ({ navigation }) => {
     const [nome, setNome] = useState('');
@@ -17,7 +18,7 @@ const Home = ({ navigation }) => {
                 if (user.exists()) {
                     console.log('Document data:', user.data());
                     const userNome = user.data().nome;
-                    setNome(userNome);'
+                    setNome(userNome);
                 } else {
                     console.log('No such document!');
                 }
@@ -39,20 +40,5 @@ const Home = ({ navigation }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-    title: {
-        fontStyle: 'Century Gothic',
-        fontSize: 55,
-        textAlign: 'center',
-        margin: 10,
-    },
-});
 
 export default Home;

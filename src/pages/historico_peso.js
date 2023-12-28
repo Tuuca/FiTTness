@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, Dimensions, Pressable } from 'react-native';
 import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
 import BottomBar from '../components/bottombar';
 import auth from '@react-native-firebase/auth';
+import styles from './styles';
 
 const { width } = Dimensions.get('window');
 
@@ -47,11 +48,11 @@ const HistoricoPeso = ({ navigation }) => {
         }
 
         return (
-            <View style={{ height: 400, flexDirection: 'row', width: width - 20 }}>
+            <View style={{ height: 400, flexDirection: 'row', width: width - 20, backgroundColor: '#666', padding: 10 }}>
                 <YAxis
                     data={pesos.map((data) => data.weight)}
                     contentInset={{ top: 20, bottom: 30 }}
-                    svg={{ fill: 'black', fontSize: 10 }}
+                    svg={{ fill: 'white', fontSize: 10 }}
                     numberOfTicks={10}
                     formatLabel={(value) => `${value}kg`}
                 />
@@ -59,16 +60,16 @@ const HistoricoPeso = ({ navigation }) => {
                     <LineChart
                         style={{ flex: 1 }}
                         data={pesos.map((data) => data.weight)}
-                        svg={{ stroke: 'rgb(134, 65, 244)' }}
+                        svg={{ stroke: '#ff4d88' }}
                         contentInset={{ top: 20, bottom: 20 }}
                     >
                         <Grid />
                     </LineChart>
                     <XAxis
-                        style={{ marginHorizontal: -10 }}
+                        style={{ marginHorizontal: - 10 }}
                         data={pesos.map((_, index) => index)}
                         formatLabel={(value, index) => pesos[index].date}
-                        svg={{ fontSize: 10, fill: 'black' }}
+                        svg={{ fontSize: 10, fill: 'white' }}
                         contentInset={{ left: 35, right: 35, bottom: 35 }}
                     />
                 </View>
@@ -83,14 +84,5 @@ const HistoricoPeso = ({ navigation }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#5A94F2',
-    },
-});
 
 export default HistoricoPeso;
