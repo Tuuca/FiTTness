@@ -35,7 +35,7 @@ const Mercados = ({ navigation }) => {
     const fetchNearbyMarkets = async (latitude, longitude) => {
         try {
             const response = await fetch(
-                `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=grocery_or_supermarket&key=AIzaSyAO2ci74MC31tPT_lCnlkt7jS4uJ-jF-bc`
+                `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=grocery_or_supermarket&key=` // + ADICIIONAR AQUI A CHAVE DA API DO GOOGLE
             );
             const data = await response.json();
 
