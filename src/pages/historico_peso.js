@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Dimensions, Pressable } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';

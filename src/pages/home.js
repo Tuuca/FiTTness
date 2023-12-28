@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import BottomBar from '../components/bottombar';
 import auth from '@react-native-firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';

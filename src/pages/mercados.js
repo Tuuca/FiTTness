@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import { color } from 'react-native-elements/dist/helpers';
 import BottomBar from '../components/bottombar';
 import styles from './styles';
 
@@ -56,7 +55,6 @@ const Mercados = ({ navigation }) => {
                 style={styles.map}
                 region={region}
             >
-                {/* Marcadores para os mercados próximos */}
                 {markets.map((market, index) => (
                     <Marker
                         key={index}

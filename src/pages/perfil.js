@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, Image, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, TouchableOpacity, Text, Image, Modal, TextInput } from 'react-native';
 import BottomBar from '../components/bottombar';
 import auth from '@react-native-firebase/auth';
 import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';

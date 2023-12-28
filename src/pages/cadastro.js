@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { db } from '../services/firebaseConfig';
 import auth from '@react-native-firebase/auth';
-import { addDoc, getDocs, collection, setDoc, doc } from "firebase/firestore";
-import Picker from '@react-native-picker/picker';
+import { setDoc, doc } from "firebase/firestore";
 
 const Cadastro = ({ navigation }) => {
     const [username, setUsername] = useState('');

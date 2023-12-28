@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, TextInput, Pressable } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import styles from './styles';
 
@@ -43,8 +43,6 @@ const Login = ({ navigation, route }) => {
             </Pressable>
 
             <Text style={styles.text}>Não possui uma conta?</Text>
-
-            {/* <Button title="Cadastrar" onPress={() => navigation.navigate('Cadastro')} style={styles.button} />*/}
 
             <Pressable title="Cadastrar" onPress={() => navigation.navigate('Cadastro')} style={styles.button}>
                 <Text style={styles.text}>Cadastrar</Text>

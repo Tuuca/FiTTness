@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput, Button, Clipboard, Pressable, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, TextInput, Clipboard, Pressable, ScrollView } from 'react-native';
 import BottomBar from '../components/bottombar';
 import { Picker } from '@react-native-picker/picker';
-import { writeBatch, batch, deleteDoc, getDocs, collection, onSnapshot, addDoc, doc, getDoc } from 'firebase/firestore';
+import { writeBatch, getDocs, collection, onSnapshot, addDoc, doc } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
 import auth from '@react-native-firebase/auth';
 import styles from './styles';

@@ -2,8 +2,6 @@ import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import BottomBar from '../components/bottombar';
 import auth from '@react-native-firebase/auth';
-import { doc, getDoc } from "firebase/firestore";
-import { db } from '../services/firebaseConfig';
 
 const logout = () => {
     auth()

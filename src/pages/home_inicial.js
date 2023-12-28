@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Button, Pressable } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import styles from './styles';
 
 const HomeInicial = ({ navigation }) => {

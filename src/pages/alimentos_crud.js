@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet, Alert, Modal, Pressable } from 'react-native';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { addDoc, collection, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from '../services/firebaseConfig';
@@ -216,14 +216,12 @@ const AlimentosCrud = () => {
                         <Text style={styles.alimentoNome}>Carboidratos: {item.carboidratos}</Text>
                         <Text style={styles.alimentoNome}>Gorduras: {item.gorduras}</Text>
 
-                        {/* Botão DELETE */}
                         <TouchableOpacity onPress={() => confirmDelete(item.id)}>
                             <View style={styles.buttonDelete}>
                                 <Text style={styles.buttonText}>DELETE</Text>
                             </View>
                         </TouchableOpacity>
 
-                        {/* Botão UPDATE */}
                         <TouchableOpacity onPress={() => { setSelectedAlimento(item); setModalVisible(true); }}>
                             <View style={styles.buttonUpdate}>
                                 <Text style={styles.buttonText}>UPDATE</Text>
@@ -233,7 +231,6 @@ const AlimentosCrud = () => {
                 ))}
             </ScrollView>
 
-            {/* Modal para realizar o update */}
             <Modal animationType="slide" visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible); }} >
                 <View style={styles.container}>
                     <Text style={styles.title}>Editar Alimento</Text>
@@ -294,107 +291,5 @@ const AlimentosCrud = () => {
         </View>
     );
 };
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         backgroundColor: '#5A94F2',
-//     },
-//     title: {
-//         fontSize: 20,
-//         textAlign: 'center',
-//         margin: 10,
-//         color: 'black',
-
-//     },
-//     TextInput: {
-//         width: '80%',
-//         height: 40,
-//         color: 'black',
-//         backgroundColor: 'white',
-//         borderRadius: 20,
-//         padding: 10,
-//         marginBottom: 10,
-//     },
-//     alimentoItem: {
-//         backgroundColor: '#ddd',
-//         margin: 10,
-//         padding: 20,
-//         borderRadius: 10,
-
-//     },
-//     alimentoNome: {
-//         fontSize: 17,
-//         color: 'black',
-//     },
-//     scrollView: {
-//         width: '100%',
-//     },
-//     buttonDelete: {
-//         backgroundColor: 'red',
-//         padding: 10,
-//         borderRadius: 5,
-//         marginTop: 10,
-//         alignItems: 'center',
-//     },
-//     buttonUpdate: {
-//         backgroundColor: 'orange',
-//         padding: 10,
-//         borderRadius: 5,
-//         marginTop: 10,
-//         alignItems: 'center',
-//     },
-//     buttonText: {
-//         color: 'white',
-//         fontSize: 16,
-//     },
-//     centeredView: {
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         marginTop: 22,
-//     },
-//     modalView: {
-//         margin: 5,
-//         backgroundColor: 'white',
-//         borderRadius: 20,
-//         padding: 5,
-//         width: 300,
-//         height: 400,
-//         alignItems: 'center',
-//         shadowColor: '#000',
-//         shadowOffset: {
-//             width: 0,
-//             height: 2,
-//         },
-//         shadowOpacity: 0.25,
-//         shadowRadius: 4,
-//         elevation: 5,
-//     },
-//     modalTitle: {
-//         fontSize: 20,
-//         marginBottom: 15,
-//         textAlign: 'center',
-//         color: 'black',
-//     },
-//     TextInput: {
-//         width: '80%',
-//         height: 40,
-//         color: 'black',
-//         backgroundColor: '#F2F2F2',
-//         borderRadius: 10,
-//         padding: 10,
-//         marginBottom: 10,
-//     },
-//     modalButton: {
-//         backgroundColor: '#2196F3',
-//         borderRadius: 10,
-//         padding: 10,
-//         elevation: 2,
-//         marginBottom: 10,
-//     },
-// });
 
 export default AlimentosCrud;
